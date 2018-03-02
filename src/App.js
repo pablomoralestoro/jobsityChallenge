@@ -5,12 +5,12 @@ import './App.css';
 import { connect } from 'react-redux';
 import { Creators } from '../src/modules/reducers/formReducer';
 import TabContent from './components/Tab';
-
+import { RaisedButton } from 'material-ui';
 
 class App extends Component {
   // constructor(props) {
   //   super(props);
-  //   this.state = 
+  //   this.state =
   //   this.incrementCounter = this.incrementCounter.bind(this);
   // }
 
@@ -26,17 +26,19 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
+      <div>
+        <div className="App">
+          <Tabs> {this.renderTabs()} </Tabs>
+        </div>
+        <div>
+          <RaisedButton label="Secondary" secondary={true} />
+          <RaisedButton label="Primary" primary={true} />
+        </div>
+        <div className="App-intro">
           {JSON.stringify(this.props.state)}
-        </p>
-        <button onClick={this.incrementCounter}>INCREMENT</button>
-        <Tabs> {this.renderTabs()} </Tabs>
-      </div>
+          <button onClick={this.incrementCounter}>INCREMENT</button>
+        </div>
+    </div>
     );
   }
 }

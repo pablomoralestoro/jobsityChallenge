@@ -16,9 +16,10 @@ const initialState={
     { tabId: 1,
       name: "Attribute 1",
       forms: [{
+        formsNumber: 0,
         name: null,
         description: null,
-      }]
+      }],
     },
     { tabId: 2,
       name: "Attribute 2",
@@ -39,7 +40,8 @@ const initialState={
 export default createReducer( initialState, {
 	[Types.GET_ATTRIBUTES]: ( state = initialState, action ) => {
 		return {
-		  ...state
+		  ...state,
+      formsNumber: state.attributes[0].forms[0].formsNumber += 1,
 		}
 	},
   [Types.SAVE_ATTRIBUTES]: ( state = initialState, action ) => {
