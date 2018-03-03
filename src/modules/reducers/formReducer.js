@@ -1,11 +1,8 @@
 import { createReducer, createActions } from 'reduxsauce';
-
+import { merge } from 'lodash';
 // Action Creators
 const { Types, Creators } = createActions ({
-  getAttributes: null,
-  saveAttributes: ["attribute"],
-  deleteAttributes: ["id"],
-  increment: null,
+  addAttributes: ['tabid','attributes'],
 },{});
 
 export { Types, Creators };
@@ -15,11 +12,7 @@ const initialState={
   attributes: [
     { tabId: 1,
       name: "Attribute 1",
-      forms: [{
-        formsNumber: 0,
-        name: null,
-        description: null,
-      }],
+      forms: [],
     },
     { tabId: 2,
       name: "Attribute 2",
@@ -38,26 +31,17 @@ const initialState={
 };
 
 export default createReducer( initialState, {
-	[Types.GET_ATTRIBUTES]: ( state = initialState, action ) => {
+	[Types.ADD_ATTRIBUTES]: ( state = initialState, action ) => {
+    let attributes = state.attributes.find(tab => tab.tabId === action.tabid);
+
+    attributes.forms.push(action.attributes)
+    let finalAttributes = merge( state.attributes, [attributes] )
+    console.log(attributes, finalAttributes);
+
 		return {
 		  ...state,
-      formsNumber: state.attributes[0].forms[0].formsNumber += 1,
+      attributes: finalAttributes
+
 		}
 	},
-  [Types.SAVE_ATTRIBUTES]: ( state = initialState, action ) => {
-    return {
-      ...state
-    }
-  },
-  [Types.DELETE_ATTRIBUTES]: ( state = initialState, action ) => {
-    return {
-      ...state
-    }
-  },
-  [Types.INCREMENT]: ( state = initialState, action ) => {
-    return {
-      ...state,
-      count: state.count+=1,
-    }
-  }
 });

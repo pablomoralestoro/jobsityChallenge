@@ -8,19 +8,10 @@ import TabContent from './components/Tab';
 import { RaisedButton } from 'material-ui';
 
 class App extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state =
-  //   this.incrementCounter = this.incrementCounter.bind(this);
-  // }
-
-  incrementCounter = () => {
-    this.props.increment();
-  }
 
   renderTabs = () => {
     return this.props.attributes.map(tab => {
-      return <Tab label={tab.name}><TabContent key={tab.tabId} tabdata={tab} /></Tab>
+      return <Tab key={tab.tabId} label={tab.name}><TabContent tabdata={tab} /></Tab>
     })
   }
 
@@ -35,8 +26,6 @@ class App extends Component {
           <RaisedButton label="Primary" primary={true} />
         </div>
         <div className="App-intro">
-          {JSON.stringify(this.props.state)}
-          <button onClick={this.incrementCounter}>INCREMENT</button>
         </div>
     </div>
     );

@@ -8,29 +8,22 @@ import { Creators } from '../modules/reducers/formReducer';
 class Tab extends Component {
 
   addForm = () => {
-    this.props.getAttributes();
+    const {tabdata, addAttributes} = this.props;
+    addAttributes(tabdata.tabId, {
+      name: null,
+      description: null,
+    });
   }
 
   renderAttributes = () => {
-    const forms = [];
+    console.log(this.props.tabdata.forms);
 
-    for (var i = 0; i < this.props.attributes[0].forms[0].formsNumber; i += 1) {
-      forms.push(<AttributeForm key={i} number={i} />);
+    return this.props.tabdata.forms.map((form, index) => {
+      return <AttributeForm key={index} formdata={form} />
+      })
     }
-    return forms.map(attributes => {
-      return attributes;
-    })
-  }
 
   render() {
-    // for (var i = 0; i < this.state.attributeForms; i += 1) {
-    //   forms.push(<AttributeForm key={i} number={i} />);
-    // };
-    //
-    // addForm = () => {
-    //   this.props.addAttributes();
-    // }
-
     return (
       <div>
         <header className="App-header">
@@ -40,21 +33,15 @@ class Tab extends Component {
             <ContentAdd />
           </FloatingActionButton>
         </header>
-        {this.renderAttributes()}
-        {JSON.stringify(this.props.tabdata)}
-        {JSON.stringify(this.props.state)}
+        <div className="siyas">
+          {this.renderAttributes()}
+        </div>
+        {JSON.stringify(this.props.tabdata, null, 2)}
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    state: state.formReducer,
-    attributes: state.formReducer.attributes
-  };
-}
-
-export default connect(mapStateToProps, {
-  getAttributes: Creators.getAttributes,
+export default connect(null, {
+  addAttributes: Creators.addAttributes,
 })(Tab);
