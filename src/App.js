@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux';
 import { Creators } from '../src/modules/reducers/formReducer';
-import TabContent from './components/Tab';
+import TabContent from './components/TabContent';
 import { RaisedButton } from 'material-ui';
 
 class App extends Component {
-
   renderTabs = () => {
-    return this.props.attributes.map(tab => {
-      return <Tab key={tab.tabId} label={tab.name}><TabContent tabdata={tab} /></Tab>
+    return this.props.attributes.map( (tab, index) => {
+      return (
+        <Tab key={index} label={tab.name}>
+          <TabContent
+            tabdata={tab}
+            addAttributes={this.props.addAttributes}
+            updateForm={this.props.updateForm}
+            removeAttributes={this.props.removeAttributes}
+            updateError={this.props.updateError}
+            allTabs={this.props.attributes}
+          />
+        </Tab>
+      );
     })
   }
 
@@ -40,5 +49,8 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, {
-  increment: Creators.increment,
+  addAttributes: Creators.addAttributes,
+  updateForm: Creators.updateForm,
+  removeAttributes: Creators.removeAttributes,
+  updateError: Creators.updateError,
 })(App);
