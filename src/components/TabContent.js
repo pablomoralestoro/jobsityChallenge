@@ -15,15 +15,16 @@ class TabContent extends Component {
       error: '',
       name: '',
       description: '',
-      defaultValue: 0,
+      defaultValue: '',
       dataType: 0,
       format: 0,
       enumerations: '',
-      rangemin: null,
-      rangemax: null,
-      unitOfMeasurement: null,
-      precision: null,
-      acurracy: null,
+      enumList: [],
+      rangemin: '',
+      rangemax: '',
+      unitOfMeasurement: '',
+      precision: '',
+      acurracy: '',
     });
   }
 
@@ -36,8 +37,9 @@ class TabContent extends Component {
           tabId={this.props.tabdata.tabId}
           updateForm={this.props.updateForm}
           removeForm={this.props.removeAttributes}
-          updateError={this.props.updateError}
           allTabs={this.props.allTabs}
+          updateList={this.props.updateList}
+          validForm={this.props.validForm}
         />
       )
     })
@@ -56,6 +58,7 @@ class TabContent extends Component {
         <div className="attributes">
           {this.renderAttributes()}
         </div>
+        <h2>Tab {this.props.tabdata.tabId} Info:</h2>
         <JSONPretty id="json-pretty" json={this.props.tabdata}></JSONPretty>
       </div>
     );

@@ -5,7 +5,8 @@ const { Types, Creators } = createActions ({
   addAttributes: ['tabid','attributes'],
   updateForm: ['tabid','formid','prop','value'],
   removeAttributes: ['tabid','formid'],
-  updateError: ['tabid','formid','prop','error'],
+  updateList: ['tabid','formid','list','enumeration'],
+  validForm: ['state']
 },{});
 
 export { Types, Creators };
@@ -31,7 +32,7 @@ const initialState={
     },
 
   ],
-  count: 0
+  validForm: true
 };
 
 export default createReducer( initialState, {
@@ -67,27 +68,25 @@ export default createReducer( initialState, {
       attributes: newstate
 		}
 	},
-  [Types.UPDATE_FORM]: ( state = initialState, action ) => {
+  [Types.UPDATE_LIST]: ( state = initialState, action ) => {
     let newstate = [...state.attributes];
     let attributes = newstate.find(tab => tab.tabId === action.tabid);
     let form = attributes.forms.find(form => form.id === action.formid);
-    form[action.prop] = action.value;
+    form.enumList.push(action.enumeration);
+    form.enumerations = '';
 
 		return {
 		  ...state,
       attributes: newstate,
 		}
 	},
-  [Types.UPDATE_ERROR]: ( state = initialState, action ) => {
-    let newstate = [...state.attributes];
-    let attributes = newstate.find(tab => tab.tabId === action.tabid);
-    let form = attributes.forms.find(form => form.id === action.formid);
-    form.error = action.error;
-
+  [Types.VALID_FORM]: ( state = initialState, action ) => {
+    let newstate = clone(state);
+    let validated = newstate.validForm = action.state;
 
 		return {
 		  ...state,
-      attributes: newstate,
+      validForm: validated
 		}
 	},
 });
