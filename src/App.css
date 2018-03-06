@@ -2,31 +2,136 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
 .App-header {
   background-color: #222;
-  height: 150px;
+  height: 60px;
   padding: 20px;
   color: white;
 }
 
-.Header-item {
-display: inline-block;
+.Add-button {
+    position: absolute;
+    right: 5%;
 }
 
-.App-title {
-  font-size: 1.5em;
+p.Header-text {
+    display: inline-block;
+    width: 85%;
 }
 
-.App-intro {
-  font-size: large;
+pre#json-pretty {
+    font-size: 17px;
+    margin: 0 5%;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+span.json-key {
+  color: rgb(255, 64, 129);
+}
+
+span.json-string {
+  color: rgb(0, 188, 212);
+}
+
+.form-Buttons {
+  margin: 45px auto;
+  width: 200px;
+  position: relative;
+}
+
+.save-Button {
+  position: absolute;
+  right: 0;
+}
+
+.attribute-Card {
+  margin: 5px;
+}
+
+.card-Header {
+  position: unset !important;
+  white-space: normal !important;
+  width: 712px;
+  margin: 0 auto;
+  padding-bottom: 40px !important;
+}
+
+.card-Header > div:first-child {
+  display: none !important;
+}
+
+.input {
+  margin: 0 20px;
+  width: 300px !important;
+  vertical-align: middle;
+
+}
+
+.expanded-Card {
+  width: 712px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.attribute-Card > div:first-child {
+  position: relative;
+}
+
+.delete-Button {
+  position: absolute;
+  left: 15px;
+  top: 35px;
+}
+
+.list-Button {
+  position: relative;
+  left: -19px;
+  top: 10px;
+}
+
+.input.range-Max {
+  top: 12px;
+}
+
+.list-Element {
+  border-bottom: 1px solid gainsboro !important;
+}
+
+
+
+@media only screen and (max-width: 820px) {
+
+  .input, .card-Header, .expanded-Card {
+    width: 80% !important;
+  }
+
+  .card-Header {
+    padding-bottom: 16px !important;
+  }
+
+  .expanded-Card {
+    padding-top: 0px !important;
+    margin-top: -16px !important;
+  }
+
+  .description > div:first-of-type, p.Header-text {
+    display: none !important;
+  }
+
+  .delete-Button {
+    top: 55px;
+  }
+
+  .list-Button {
+    top: 18px;
+    left: 20px
+  }
+
+  .input.range-Max {
+    top: 0px;
+  }
+
+  .list-Element {
+    margin-top: 20px !important;
+  }
+
 }

@@ -31,8 +31,8 @@ class App extends Component {
   };
 
   renderTabs = () => {
-    
-    return this.props.attributes.map( (tab, index) => {
+
+    return this.props.attributes.map((tab, index) => {
       return (
         <Tab key={index} label={tab.name}>
           <TabContent
@@ -96,9 +96,9 @@ class App extends Component {
           <div className="App">
             <Tabs> {this.renderTabs()} </Tabs>
           </div>
-          <div>
+          <div className="form-Buttons">
             <RaisedButton label="Cancel" onClick={this.clearPage} secondary={true} />
-            <RaisedButton label="Save" disabled={this.props.state.validForm} onClick={this.confirmJson} primary={true} />
+            <RaisedButton label="Save" className="save-Button" disabled={this.props.state.validForm} onClick={this.confirmJson} primary={true} />
           </div>
         </form>
       </div>

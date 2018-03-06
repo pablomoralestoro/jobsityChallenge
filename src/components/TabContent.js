@@ -12,7 +12,6 @@ class TabContent extends Component {
 
     addAttributes(tabdata.tabId, {
       id: uniqueId('form'),
-      error: '',
       name: '',
       description: '',
       defaultValue: '',
@@ -20,11 +19,11 @@ class TabContent extends Component {
       format: 0,
       enumerations: '',
       enumList: [],
-      rangemin: '',
-      rangemax: '',
-      unitOfMeasurement: '',
-      precision: '',
-      acurracy: '',
+      rangemin: null,
+      rangemax: null,
+      unitOfMeasurement: null,
+      precision: null,
+      acurracy: null,
     });
   }
 
@@ -49,9 +48,9 @@ class TabContent extends Component {
     return (
       <div>
         <header className="App-header">
-          <p className="Header-item">This form is made as a challenge delivered to Jobsity by Pablo Morales
+          <p className="Header-text">This form is made as a challenge delivered to Jobsity by Pablo Morales
             and should not be cloned for the same purposes</p>
-          <FloatingActionButton className="Header-item" onClick={this.addForm}>
+          <FloatingActionButton className="Add-button" onClick={this.addForm}>
             <ContentAdd />
           </FloatingActionButton>
         </header>

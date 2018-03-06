@@ -8,6 +8,7 @@ import _ from 'lodash';
 class AttributeForm extends Component {
 
   constructor() {
+
     super();
     this.state = {
       errors: {
@@ -23,12 +24,19 @@ class AttributeForm extends Component {
     };
   }
 
+  componentDidMount() {
+
+    this.updateErrors('name','This field is required');
+  }
+
   removeForm = () => {
+
     const { tabId, removeForm, formdata } = this.props;
     removeForm(tabId, formdata.id);
   }
 
   updateErrors = (field, error) => {
+
     var newErrors = _.extend({}, this.state.errors);
     newErrors[field] = error;
     this.setState({ errors: newErrors });
@@ -39,31 +47,93 @@ class AttributeForm extends Component {
   dataType = (value) => {
 
     var newState = _.extend({}, this.state);
+    const { updateForm, tabId, formdata } = this.props;
+    const { id } = formdata;
+    let fields = ['enumerations', 'enumList', 'rangemin', 'rangemin', 'rangemax',
+    'unitOfMeasurement', 'precision', 'acurracy'];
+
     switch (value) {
+
       case 1:
         newState.dataType = true;
+        fields.map((field) => {
+          return updateForm(tabId, id, field, null);
+        });
         this.setState(newState);
         break;
 
+
       default:
         newState.dataType = false;
+        fields.map((field) => {
+          if (field === 'enumList') {
+            return updateForm(tabId, id, field, []);
+          }
+          else {
+            return updateForm(tabId, id, field, '');
+          }
+        });
         this.setState(newState);
     }
+  }
 
+  formatType = (format) => {
+    let fields = ['rangemin', 'rangemin', 'rangemax',
+    'unitOfMeasurement', 'precision', 'acurracy'];
+    let fields1 = ['enumerations', 'enumList'];
+    let fields2 = fields.concat(fields1);
+    const { formdata, updateForm, tabId } = this.props;
+    const { id } = formdata;
+
+    if (format === 0) {
+      fields.map((field) => {
+        return updateForm(tabId, id, field, null);
+      });
+      fields1.map((field) => {
+        if (field === 'enumList') {
+          return updateForm(tabId, id, field, []);
+        }
+        else {
+          return updateForm(tabId, id, field, '');
+        }
+      });
+    }
+    else if (format === 1) {
+      fields1.map((field) => {
+        return updateForm(tabId, id, field, null);
+      });
+      fields.map((field) => {
+        return updateForm(tabId, id, field, '');
+      });
+    }
+    else {
+      fields2.map((field) => {
+        return updateForm(tabId, id, field, null);
+      });
+    }
   }
 
   validate = (tabid,id,field,value) => {
+
     let error;
     let name = [];
-    const re = /^[0-9\b]+$/;
+    var valid = !/^\s*$/.test(value) && !isNaN(value);
+    const { rangemax } = this.props.formdata;
+    const { rangemin } = this.props.formdata;
+    let minrange = parseFloat(rangemin);
+    let valueFloat = parseFloat(value);
+    let maxrange = parseFloat(rangemax);
 
     name = () => {
+
       const { allTabs } = this.props;
       var name = [];
-      for (var i = 0; i < allTabs.length; i++) {
-        allTabs[i].forms.map((form, index) =>
-          {name.push(form.name);});
-      }
+      allTabs.map((tab)=> {
+        return tab.forms.map((form) => {
+          return name.push(form.name);
+        })
+      })
+
       let clones = name.filter(clones => clones === value && clones !== '');
       if (clones.length > 1) {
         name = true;
@@ -72,7 +142,9 @@ class AttributeForm extends Component {
     }
 
     switch (field) {
+
       case 'name':
+
         if (value==='') {
           error = 'This field is required';
           this.updateErrors(field,error);
@@ -88,6 +160,7 @@ class AttributeForm extends Component {
         break;
 
       case 'enumerations':
+
         if (value==='') {
           error = 'The field is empty';
           this.updateErrors(field,error);
@@ -99,16 +172,16 @@ class AttributeForm extends Component {
         break;
 
       case 'rangemin':
-        const { rangemax } = this.props.formdata;
+
         if (value === '') {
           error = 'The field is empty';
           this.updateErrors(field,error);
         }
-        else if (!re.test(value)) {
+        else if (!valid) {
           error = 'The input must be a number';
           this.updateErrors(field,error);
         }
-        else if (value>rangemax) {
+        else if (value >= rangemax && rangemax !== '') {
           error = 'The input must be lower than Range Max';
           this.updateErrors(field,error);
         }
@@ -119,16 +192,16 @@ class AttributeForm extends Component {
         break;
 
       case 'rangemax':
-        const { rangemin } = this.props.formdata;
+
         if (value === '') {
           error = 'The field is empty';
           this.updateErrors(field,error);
         }
-        else if (!re.test(value)) {
+        else if (!valid) {
           error = 'The input must be a number';
           this.updateErrors(field,error);
         }
-        else if (value < rangemin) {
+        else if (value <= rangemin) {
           error = 'The input must be higher than Range Min';
           this.updateErrors(field,error);
         }
@@ -138,20 +211,61 @@ class AttributeForm extends Component {
         }
         break;
 
-        case 'unitOfMeasurement':
-          if (value === '') {
-            error = 'The field is empty';
-            this.updateErrors(field,error);
-          }
-          else if (re.test(value)) {
-            error = 'The input must be a string';
-            this.updateErrors(field,error);
-          }
-          else {
-            error = '';
-            this.updateErrors(field,error);
-          }
-          break;
+      case 'unitOfMeasurement':
+
+        if (value === '') {
+          error = 'The field is empty';
+          this.updateErrors(field,error);
+        }
+        else if (valid) {
+          error = 'The input must be a string';
+          this.updateErrors(field,error);
+        }
+        else {
+          error = '';
+          this.updateErrors(field,error);
+        }
+        break;
+
+      case 'precision':
+
+        if (value === '') {
+          error = 'The field is empty';
+          this.updateErrors(field,error);
+        }
+        else if (!valid) {
+          error = 'The input must be a number';
+          this.updateErrors(field,error);
+        }
+        else if (((maxrange - minrange) % valueFloat) !== 0) {
+          error = 'Value not allowed';
+          this.updateErrors(field,error);
+        }
+        else {
+          error = '';
+          this.updateErrors(field,error);
+        }
+        break;
+
+      case 'acurracy':
+
+        if (value === '') {
+          error = 'The field is empty';
+          this.updateErrors(field,error);
+        }
+        else if (!valid) {
+          error = 'The input must be a number';
+          this.updateErrors(field,error);
+        }
+        else if (((maxrange - minrange) % valueFloat) !== 0) {
+          error = 'Value not allowed';
+          this.updateErrors(field,error);
+        }
+        else {
+          error = '';
+          this.updateErrors(field,error);
+        }
+        break;
 
       default:
 
@@ -159,111 +273,132 @@ class AttributeForm extends Component {
   }
 
   renderFields = () => {
+
     const { tabId, updateForm } = this.props;
-    const { errors } = this.state;
+    const { errors, dataType } = this.state;
     const { format, enumerations, id, rangemin, rangemax,
       unitOfMeasurement, precision, acurracy
     } = this.props.formdata;
 
-    switch (format) {
-      case 0:
-        return (
-          <div>
-            <TextField
-              hintText='Enter value'
-              floatingLabelText='Enumerations:'
-              floatingLabelFixed={true}
-              value={enumerations}
-              errorText={errors.enumerations}
-              onChange={
-                (event, value) => {
-                  updateForm(tabId,id,'enumerations',value);
-                }
-              }
-            />
-            <RaisedButton
-              label="Primary"
-              primary={true}
-              onClick={this.addList}
-            />
-            <List>
-              {this.renderList()}
-            </List>
-          </div>
-        );
+    switch (dataType) {
 
-      case 1:
-        return (
-          <div>
-            <TextField
-              hintText='Range Min'
-              floatingLabelText='Range:'
-              floatingLabelFixed={true}
-              value={rangemin}
-              errorText={errors.rangemin}
-              onChange={
-                (event, value) => {
-                  updateForm(tabId,id,'rangemin', value);
-                  this.validate(tabId, id, 'rangemin', value);
-                }
-              }
-            />
-            <TextField
-              hintText='Range Max'
-              value={rangemax}
-              errorText={errors.rangemax}
-              onChange={
-                (event, value) => {
-                  updateForm(tabId,id,'rangemax',value);
-                  this.validate(tabId, id, 'rangemax', value);
-                }
-              }
-            /><br />
-            <TextField
-              hintText='UoM (eg. mm)'
-              floatingLabelText='Unit of Measurement:'
-              floatingLabelFixed={true}
-              value={unitOfMeasurement}
-              errorText={errors.unitOfMeasurement}
-              onChange={
-                (event, value) => {
-                  updateForm(tabId,id,'unitOfMeasurement',value);
-                  this.validate(tabId, id, 'unitOfMeasurement', value);
-                }
-              }
-            />
-            <TextField
-              hintText='Precision (eg. 0.5)'
-              floatingLabelText='Precision:'
-              floatingLabelFixed={true}
-              value={precision}
-              errorText={errors.precision}
-              onChange={
-                (event, value) => {
-                  updateForm(tabId,id,'precision',value);
-                }
-              }
-            />
-            <TextField
-              hintText='Acurracy (eg. 0.5)'
-              floatingLabelText='Acurracy:'
-              floatingLabelFixed={true}
-              value={acurracy}
-              errorText={errors.acurracy}
-              onChange={
-                (event, value) => {
-                  updateForm(tabId,id,'acurracy',value);
-                }
-              }
-            />
-          </div>
-        );
+      case true:
+        break;
+
       default:
 
+        switch (format) {
+
+          case 0:
+
+            return (
+              <div>
+                <TextField
+                  className='input'
+                  hintText='Enter value'
+                  floatingLabelText='Enumerations:'
+                  floatingLabelFixed={true}
+                  value={enumerations}
+                  errorText={errors.enumerations}
+                  onChange={
+                    (event, value) => {
+                      updateForm(tabId,id,'enumerations',value);
+                    }
+                  }
+                />
+                <RaisedButton
+                  className="list-Button"
+                  label="Add"
+                  primary={true}
+                  onClick={this.addList}
+                />
+                <List>
+                  {this.renderList()}
+                </List>
+              </div>
+            );
+
+          case 1:
+
+            return (
+              <div>
+                <TextField
+                  className='input'
+                  hintText='Range Min'
+                  floatingLabelText='Range:'
+                  floatingLabelFixed={true}
+                  value={rangemin}
+                  errorText={errors.rangemin}
+                  onChange={
+                    (event, value) => {
+                      updateForm(tabId,id,'rangemin', value);
+                      this.validate(tabId, id, 'rangemin', value);
+                    }
+                  }
+                />
+                <TextField
+                  className='input range-Max'
+                  hintText='Range Max'
+                  value={rangemax}
+                  errorText={errors.rangemax}
+                  onChange={
+                    (event, value) => {
+                      updateForm(tabId,id,'rangemax',value);
+                      this.validate(tabId, id, 'rangemax', value);
+                    }
+                  }
+                /><br />
+                <TextField
+                  className='input'
+                  hintText='UoM (eg. mm)'
+                  floatingLabelText='Unit of Measurement:'
+                  floatingLabelFixed={true}
+                  value={unitOfMeasurement}
+                  errorText={errors.unitOfMeasurement}
+                  onChange={
+                    (event, value) => {
+                      updateForm(tabId,id,'unitOfMeasurement',value);
+                      this.validate(tabId, id, 'unitOfMeasurement', value);
+                    }
+                  }
+                />
+                <TextField
+                  className='input'
+                  hintText='Precision (eg. 0.5)'
+                  floatingLabelText='Precision:'
+                  floatingLabelFixed={true}
+                  value={precision}
+                  errorText={errors.precision}
+                  onChange={
+                    (event, value) => {
+                      updateForm(tabId,id,'precision',value);
+                      this.validate(tabId, id, 'precision', value);
+                    }
+                  }
+                />
+                <TextField
+                  className='input'
+                  hintText='Acurracy (eg. 0.5)'
+                  floatingLabelText='Acurracy:'
+                  floatingLabelFixed={true}
+                  value={acurracy}
+                  errorText={errors.acurracy}
+                  onChange={
+                    (event, value) => {
+                      updateForm(tabId,id,'acurracy',value);
+                      this.validate(tabId, id, 'acurracy', value);
+                    }
+                  }
+                />
+              </div>
+            );
+          default:
+        }
     }
   }
 
   addList = () => {
+
     const { tabId, updateList, formdata } = this.props;
     const { id, enumerations, enumList } = formdata;
     this.validate(tabId, id, 'enumerations', enumerations);
@@ -273,9 +408,11 @@ class AttributeForm extends Component {
   }
 
   renderList = () => {
+
     return this.props.formdata.enumList.map((list,index) => {
       return (
         <ListItem
+          className='list-Element'
           key={index}
           primaryText={list}
           rightIcon={<ActionInfo />}
@@ -292,20 +429,27 @@ class AttributeForm extends Component {
         validator = true;
       }
     }
-    this.props.validForm(validator);
+    let formid = this.props.formdata.id.replace( /^\D+/g, '');
+    this.props.validForm(validator,formid);
 
   }
 
   render() {
+
     const { tabId, formdata, updateForm } = this.props;
     const { errors } = this.state;
     const { name, description, id, defaultValue, dataType, format } = formdata;
 
     return (
-      <Card>
-        <CardHeader showExpandableButton={true}>
+      <Card className='attribute-Card'>
+        <CardHeader className='card-Header' showExpandableButton={true}>
+
+          <FloatingActionButton className="delete-Button" onClick={this.removeForm} >
+            <ContentDeleteSweep />
+          </FloatingActionButton>
 
           <TextField
+            className='input name'
             hintText='Enter a name'
             floatingLabelText='Name:'
             floatingLabelFixed={true}
@@ -316,9 +460,11 @@ class AttributeForm extends Component {
                 updateForm(tabId,id,'name',value);
                 this.validate(tabId,id,'name',value);
               }
-            } />
+            }
+          />
 
           <TextField
+            className='input description'
             hintText='Enter a description for your new attribute'
             floatingLabelText='Description:'
             floatingLabelFixed={true}
@@ -327,21 +473,19 @@ class AttributeForm extends Component {
               (event, value) => {
                 updateForm(tabId,id,'description',value);
               }
-            } />
-
-          <FloatingActionButton className="Header-item" onClick={this.removeForm} >
-            <ContentDeleteSweep />
-          </FloatingActionButton>
+            }
+          />
 
         </CardHeader>
 
-        <CardText expandable={true}>
+        <CardText className='expanded-Card' expandable={true}>
 
-          <SelectField floatingLabelText='Device Resource Type' value={1} disabled={true}>
+          <SelectField floatingLabelText='Device Resource Type' className='input' value={1} disabled={true}>
             <MenuItem value={1} primaryText='Default Value' />
           </SelectField>
 
           <TextField
+            className='input default-Value'
             hintText='Enter a default Value'
             floatingLabelText='Default Value:'
             floatingLabelFixed={true}
@@ -354,6 +498,7 @@ class AttributeForm extends Component {
             } /><br />
 
           <SelectField
+            className='input'
             floatingLabelText='Data Type:'
             value={dataType}
             onChange={
@@ -367,12 +512,14 @@ class AttributeForm extends Component {
           </SelectField>
 
           <SelectField
+            className='input'
             floatingLabelText='Format:'
             value={format}
             disabled={this.state.dataType}
             onChange={
               (event, value) => {
                 updateForm(tabId,id,'format',value);
+                this.formatType(value);
               }
             }>
             <MenuItem value={0} primaryText='NONE' />

@@ -6,7 +6,7 @@ const { Types, Creators } = createActions ({
   updateForm: ['tabid','formid','prop','value'],
   removeAttributes: ['tabid','formid'],
   updateList: ['tabid','formid','list','enumeration'],
-  validForm: ['state']
+  validForm: ['value','formid']
 },{});
 
 export { Types, Creators };
@@ -32,7 +32,8 @@ const initialState={
     },
 
   ],
-  validForm: true
+  validForm: true,
+  validForms: []
 };
 
 export default createReducer( initialState, {
@@ -82,11 +83,18 @@ export default createReducer( initialState, {
 	},
   [Types.VALID_FORM]: ( state = initialState, action ) => {
     let newstate = clone(state);
-    let validated = newstate.validForm = action.state;
+    newstate.validForms.splice((action.formid-1), 1, action.value);
+    let saveForm = false;
+    newstate.validForms.map((form)=> {
+      if (form!==false) {
+        return saveForm = true;
+      }
+      return true;
+    });
 
 		return {
 		  ...state,
-      validForm: validated
+      validForm: saveForm
 		}
 	},
 });
